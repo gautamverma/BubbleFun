@@ -33,24 +33,13 @@ public class Shape {
 	}
 
 	/*
-	 * It move the shape 1 unit LEFT,RIGHT or DOWN
+	 * It move the shape 1 unit DOWN, done with the user call.
+	 * That is repeatdly
 	 * */
 	public void update() {
-		if(direction == Direction.LEFT) {
-			for(int i = 0; i<coordinate.length; i++) {
-				if(coordinate[i][0]>AppConst.ORIGIN_X) coordinate[i][0]--;
+		for(int i = 0; i<coordinate.length; i++) {
+			coordinate[i][1]++;
 			}
-		}
-		else if(direction == Direction.RIGHT) {
-			for(int i = 0; i<coordinate.length; i++) {
-				if(coordinate[i][0]<(AppConst.ARENA_GRID_WIDTH - 1))coordinate[i][0]++;
-			}
-		}
-		else {
-			for(int i = 0; i<coordinate.length; i++) {
-				coordinate[i][1]++;
-			}
-		}
 		clearDirection();
 	}
 	
@@ -172,11 +161,15 @@ public class Shape {
 	}
 	
 	void moveLeft() {
-		direction = Direction.LEFT;
+		for(int i = 0; i<coordinate.length; i++) {
+			coordinate[i][0]--;
+		}
 	}
 	
 	void moveRight() {
-		direction = Direction.RIGHT;
+		for(int i = 0; i<coordinate.length; i++) {
+			coordinate[i][0]++;
+		}
 	}
 	
 	void clearDirection() {

@@ -22,7 +22,7 @@ import com.game.input.Input.TouchEvent;
  *  3) Resume
  *  4) Over
  *  
- *  ** Adding Acclerometer Support
+ *  ** Adding Accelerometer Support
  * @author Gautam
  * */
 public class GameScreen extends Screen {
@@ -31,7 +31,11 @@ public class GameScreen extends Screen {
 	
 	Arena arena;
 	GameState state;
-	
+
+	float[] accelerationConst = { .5f, .8f, 1f, 1.2f, 1.5f, 1.7f, 1.9f, 2.0f,
+			2.2f, 2.5f, 2.8f, 3.0f, 4.0f, 5.0f, 6.0f, 8.0f, 10.0f };
+	int leftA = 0;
+	int rightA = 0;
 	
 	public GameScreen(Game game) {
 		super(game);
@@ -121,14 +125,20 @@ public class GameScreen extends Screen {
 					}
 			}
 		}
-		// positive means left side and negative means right side
-		// Too fast and does not let the shape move down
-		if(AccelX>1) {
+		// For each more turn it will fired at higher acceleration 
+		if(AccelX>=accelerationConst[leftA]) {
 			arena.moveLeft();
+			rightA = 0;
+			if(leftA<(accelerationConst.length-1))
+				leftA++;
 		}
-		else if(AccelX<-1){
+		else if(AccelX<-accelerationConst[rightA]){
 			arena.moveRight();
+			leftA = 0;
+			if(rightA<(accelerationConst.length-1))
+				rightA++;
 		}
+		
 		arena.update(deltaTime);
 		
 		if(arena.gameOver()) {

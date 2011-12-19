@@ -189,6 +189,8 @@ public class AppConst {
 	
 	public static final int SCORE_WIDTH_JUMP = 9;
 	
+    // Acceleration Value to update 
+	public static final int ACCELERATION_CONSTANT = 2;
 	// File Names
 	public static final String DIGITS = "digits_astrik.png";
 	public static final String ALPHABETS = "abcde_36x36_gap36_in_y.png";

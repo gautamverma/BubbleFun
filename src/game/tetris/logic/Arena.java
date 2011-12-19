@@ -200,7 +200,7 @@ public class Arena {
 	}
 	public void moveRight() {
 		int[][] coordinate = shape.coordinate;
-		if(coordinate[0][1]==AppConst.RIGHT_LIMIT || coordinate[1][0]==AppConst.RIGHT_LIMIT 
+		if(coordinate[0][0]==AppConst.RIGHT_LIMIT || coordinate[1][0]==AppConst.RIGHT_LIMIT 
 				|| coordinate[2][0]==AppConst.RIGHT_LIMIT || coordinate[3][0]==AppConst.RIGHT_LIMIT )
 			clearDirection();
 		else {
