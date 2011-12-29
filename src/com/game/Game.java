@@ -1,5 +1,7 @@
 package com.game;
 
+import android.content.Context;
+
 import com.game.audio.Audio;
 import com.game.input.Input;
 import com.game.fileio.FileIO;
@@ -16,6 +18,7 @@ public interface Game {
 	FileIO getFileIO();
 	Graphics getGraphics();
 	Audio getAudio();
+	Context getContext();
 	
 	void setScreen(Screen screen);
 	Screen getCurrentScreen();

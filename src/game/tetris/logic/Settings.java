@@ -18,16 +18,14 @@ import com.game.fileio.FileIO;
 public class Settings {
 
 	public static boolean soundEnabled;
-	static int[] HighScore;
-	static int length = 20;
+	public static int HighScore;
 	static String fileName;
 	
 	static
 	{
+		HighScore = 0;
 		soundEnabled = true;
 		fileName = "tetris_settings";
-		HighScore = new int[length];
-		for(int i = 0; i<HighScore.length; i++) HighScore[i] = 0;
 	}
 	
 	public static void save(FileIO fileIO) {
@@ -36,9 +34,7 @@ public class Settings {
 			writer = new BufferedWriter(new OutputStreamWriter(fileIO.writeFile(fileName)));
 			writer.write(Boolean.toString(soundEnabled));
 			writer.newLine();
-			for(int i = 0; i<HighScore.length; i++) {
-				writer.write(HighScore[i]); writer.newLine();
-			}
+			writer.write(HighScore); writer.newLine();
 			writer.flush();
 		}
 		catch(IOException ioException) {
@@ -64,9 +60,7 @@ public class Settings {
 			else {
 				reader = new BufferedReader(new InputStreamReader(fileIO.readFile(fileName)));
 				soundEnabled = Boolean.parseBoolean(reader.readLine());
-				for(int i = 0; i<HighScore.length; i++) {
-					HighScore[i] = Integer.parseInt(reader.readLine());
-				}
+				HighScore = Integer.parseInt(reader.readLine());
 			}
 		}
 		catch(IOException ioException) {
@@ -85,25 +79,10 @@ public class Settings {
 	/*
 	 * It tries adds a score to the High Scores 
 	 * */
-	public static void addScore(int score) {
-		
-		int i = length-1;
-		while(HighScore[i]<score && i>0) {
-			HighScore[i] = HighScore[i-1]; 
-			i--;
+	public static void addScore(int score) {	
+		if(score>HighScore) {
+			HighScore = score;
 		}
-		if(i<(length-1)) {
-			HighScore[i] = score;
-		}
-	}
-	
-	public static int scorePosition(int score) {
-		for(int i = 0; i<HighScore.length; i++) {
-			if(HighScore[i]==score) return i+1;
-		}
-		
-		// This will be returned if score not present
-		return 0;
 	}
 	
 	public static void toggleSound() {

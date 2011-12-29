@@ -5,45 +5,50 @@ import com.game.graphics.Pixmap;
 
 /*
  * This class contains all the references of assets used.
+ * 
+ *  text_XXX  - The Pic that has XXX text
+ *  
  * @author Gautam 
  * */
 public class Assets {
 
 	public static Pixmap block;
 	public static Pixmap writingblock;
-	public static Pixmap digits;
 	public static Pixmap alphabets;
-	public static Pixmap smallBlock;
 	public static Pixmap background;
-	public static Pixmap numbers;
-	public static Pixmap numbers2x;
-	
-	public static Pixmap btn_rotate;
-	public static Pixmap btn_left;
-	public static Pixmap btn_right;
-	
+	public static Pixmap grey_background;
+	public static Pixmap filing_block_ver;
+	public static Pixmap filing_block_hor;
+		
 	public static Pixmap soundbutton;
 	
-	public static Pixmap msg_resume;
-	public static Pixmap msg_quit;
-	public static Pixmap msg_next;
-	public static Pixmap msg_score;
+	public static Pixmap text_start;
+    public static Pixmap text_tutorial;
+    public static Pixmap text_resume;
+    public static Pixmap text_quit;
+    public static Pixmap text_retry;
+    public static Pixmap text_highscore;
+    public static Pixmap text_high_score;
+    public static Pixmap text_your_score;
+    public static Pixmap text_back_to_menu;
+    
+    public static Pixmap text_tap_to_start;
+    public static Pixmap text_next;
+    public static Pixmap text_level;
+    public static Pixmap text_lines;
+    public static Pixmap text_score;
+    
+    public static Pixmap digits;
+    public static Pixmap small_digits;
 	
-	public static Pixmap msg_playagain;
-	public static Pixmap msg_tomenu;
-	public static Pixmap msg_toptostart;
-	public static Pixmap msg_taphere;
-	
-	public static Pixmap msg_help1;
-	public static Pixmap msg_help2_part1;
-	public static Pixmap msg_help2_part2;
-	public static Pixmap msg_help3_part1;
-	public static Pixmap msg_help3_part2;
-	
-	public static Pixmap help1;
-	public static Pixmap help2;
-	public static Pixmap help3_scene1;
-	public static Pixmap help3_scene2;
+	public static Pixmap tutorial_msg1;
+	public static Pixmap tutorial_msg2;
+	public static Pixmap tutorial_msg3;
+	public static Pixmap tutorial_msg4;
+	public static Pixmap tutorial_msg5;
+	public static Pixmap tutorial_msg6;
+	public static Pixmap tutorial_msg_successful;
+	public static Pixmap tutorial_msg_fail;
 	
 	public static Sound rotate;
 	public static Sound lineCompleted;

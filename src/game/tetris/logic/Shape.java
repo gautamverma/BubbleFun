@@ -21,10 +21,12 @@ public class Shape {
 	
 	public int[][] coordinate;
 	ShapeType type;
+	public int colour;
 	
 	Shape() {
 		direction = Direction.DOWN;
 		type = getType(random.nextInt(5));
+		colour = random.nextInt(5) + 1;
 		coordinate = getEnteringCoordinate(getIntOnType(type));
 	}
 	

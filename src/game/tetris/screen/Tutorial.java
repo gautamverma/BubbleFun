@@ -1,38 +1,31 @@
 package game.tetris.screen;
 
-import java.util.List;
-
 import game.tetris.logic.Arena;
 import game.tetris.logic.Settings;
+import game.tetris.screen.GameScreen.GameState;
 import game.tetris.util.AppConst;
 import game.tetris.util.Assets;
 import game.tetris.util.FileName;
 import game.tetris.util.GameUtil;
 import game.tetris.util.ScreenConst;
 
+import java.util.List;
+
 import com.game.Game;
 import com.game.Screen;
 import com.game.graphics.Graphics;
 import com.game.input.Input.TouchEvent;
 
-/*
- * This is the game Screen and it implements all the four game transitions
- *  1) Tap to start
- *  2) Pause
- *  3) Resume
- *  4) Over
- *  
- *  ** Adding Accelerometer Support
- * @author Gautam
- * */
-public class GameScreen extends Screen {
+public class Tutorial extends Screen {
 
-	enum GameState {
-		START, RUNNING, PAUSED, STOPPED
-	}
+	enum TutorialState {
+		START_PAGE1, START_PAGE2, RUNNING, PAUSED, FAIL, SUCCESSFUL
+	};
+
+	int blockNumber;
+	TutorialState state;
 
 	Arena arena;
-	GameState state;
 
 	/****************** Accelerometer Constants *****************/
 	int leftA = 0;
@@ -41,99 +34,126 @@ public class GameScreen extends Screen {
 	static float MOVE_DOWN_ACCELERATION_CONST = 7.0f;
 	static float MOVE_DOWN_ACCELERATION;
 	static float RESUME_MOVE_DOWN = 0.7f;
-
 	/************************************************************/
 
-	public GameScreen(Game game) {
+	CharSequence LEFT_MSG = "Congrats, you have moved block left successfully by tilting mobile to left";
+	CharSequence RIGHT_MSG = "Congrats, you have moved block right successfully by tilting mobile to right";
+	CharSequence ROTATE_MSG = "Congrats, you have rotated block successfully by tapping on mobile";
+	CharSequence DOWN_MSG = "Congrats, you have moved block down successfully by making mobile vertical";
+
+	public Tutorial(Game game) {
 		super(game);
 
 		arena = new Arena();
-		state = GameState.START;
+		state = TutorialState.START_PAGE1;
 		MOVE_DOWN_ACCELERATION = MOVE_DOWN_ACCELERATION_CONST;
 	}
 
 	@Override
 	public void update(float deltaTime) {
 
-		List<TouchEvent> event = game.getInput().getTouchEvent();
-		float accelX = game.getInput().getAccelX();
-		float accelY = game.getInput().getAccelY();
+		List<TouchEvent> events = game.getInput().getTouchEvent();
 		game.getInput().getKeyEvents();
 
-		if (state == GameState.START)
-			updateStart(event);
-		else if (state == GameState.RUNNING)
-			updateRunning(event, accelX, accelY, deltaTime);
-		else if (state == GameState.PAUSED)
-			updatePaused(event);
-		else
-			updateStopped(event);
+		float accelX = game.getInput().getAccelX();
+		float accelY = game.getInput().getAccelY();
 
-		if (arena.level > AppConst.HIGHEST_LEVEL) {
-			game.setScreen(new FinishScreen(game));
-		}
+		if (state == TutorialState.START_PAGE1)
+			updateStart(events);
+		else if (state == TutorialState.START_PAGE2)
+			updateStart(events);
+		else if(state==TutorialState.PAUSED)
+			updatePaused(events);
+		else if (state == TutorialState.RUNNING)
+			updateRunning(events, accelX, accelY, deltaTime);
+		else if (state == TutorialState.SUCCESSFUL)
+			updateSuccessful(events);
+		else if (state == TutorialState.FAIL)
+			updateFail(events);
 	}
 
-	@Override
 	public void present(float deltaTime) {
-
 		Graphics g = game.getGraphics();
 
 		// No Need to do it in multiple present methods
 		g.drawPixmap(Assets.background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 
-		if (state == GameState.START)
+		if (state == TutorialState.START_PAGE1)
 			presentStart(g);
-		else if (state == GameState.RUNNING)
+		else if (state == TutorialState.START_PAGE2)
+			presentStart(g);
+		else if (state == TutorialState.RUNNING || state==TutorialState.PAUSED)
 			presentRunning(g);
-		else if (state == GameState.PAUSED)
-			presentPaused(g);
-		else
-			presentStopped(g);
-
+		else if (state == TutorialState.SUCCESSFUL)
+			presentSuccessful(g);
+		else if (state == TutorialState.FAIL)
+			presentFail(g);
 	}
 
-	public void updateStart(List<TouchEvent> event) {
-		if (event.size() > 0) {
-			if (Settings.soundEnabled)
-				Assets.click.play(1);
-			state = GameState.RUNNING;
+	protected void updateStart(List<TouchEvent> events) {
+		for (int i = 0; i < events.size(); i++) {
+			if (events.get(i).type == TouchEvent.TOUCH_UP) {
+				if (state == TutorialState.START_PAGE2) {
+					if (Settings.soundEnabled)
+						Assets.click.play(1);
+					if (GameUtil.inBounds(events.get(i), ScreenConst.MSG6_X,
+							ScreenConst.MSG6_Y, FileName.TUTORIAL_MSG6_WH,
+							FileName.TUTORIAL_MSG6_HT))
+						state = TutorialState.RUNNING;
+					else
+						state = TutorialState.START_PAGE1;
+				} else
+					state = TutorialState.START_PAGE2;
+			}
 		}
-
 	}
 
-	public void presentStart(Graphics g) {
-		commonPresent(g);
-		g.drawPixmap(Assets.text_tap_to_start, ScreenConst.TAP_TO_START_X,
-				ScreenConst.TAP_TO_START_Y);
+	protected void presentStart(Graphics g) {
+
+		if (state == TutorialState.START_PAGE1) {
+			g.drawPixmap(Assets.tutorial_msg1, ScreenConst.MSG_X,
+					ScreenConst.MSG1_Y);
+			g.drawPixmap(Assets.tutorial_msg2, ScreenConst.MSG_X,
+					ScreenConst.MSG2_Y);
+			g.drawPixmap(Assets.tutorial_msg3, ScreenConst.MSG_X,
+					ScreenConst.MSG3_Y);
+		} else {
+			g.drawPixmap(Assets.tutorial_msg4, ScreenConst.MSG_X,
+					ScreenConst.MSG4_Y);
+			g.drawPixmap(Assets.tutorial_msg5, ScreenConst.MSG_X,
+					ScreenConst.MSG5_Y);
+			g.drawPixmap(Assets.tutorial_msg6, ScreenConst.MSG6_X,
+					ScreenConst.MSG6_Y);
+		}
 	}
 
 	public void updateRunning(List<TouchEvent> event, float AccelX,
 			float AccelY, float deltaTime) {
 		for (int i = 0; i < event.size(); i++) {
-			if (event.get(i).type == TouchEvent.TOUCH_UP) {
-				if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
-						AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
-						AppConst.RUNNING_PAUSE_HEIGHT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					state = GameState.PAUSED;
-				} else {
-					if (Settings.soundEnabled)
-						Assets.rotate.play(1);
-					arena.rotate();
-				}
+			if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
+					AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
+					AppConst.RUNNING_PAUSE_HEIGHT)) {
+				if (Settings.soundEnabled)
+					Assets.click.play(1);
+				state = TutorialState.PAUSED;
+			}
+			else if (event.get(i).type == TouchEvent.TOUCH_UP) {
+				if (Settings.soundEnabled)
+					Assets.rotate.play(1);
+				arena.rotate();
 			}
 		}
 
 		// For each more turn it will fired at higher acceleration
 		if (AccelX >= AppConst.ACCELERATIONCONST[leftA]) {
 			arena.moveLeft();
+
 			rightA = 0;
 			if (leftA < (AppConst.ACCELERATIONCONST.length - 1))
 				leftA++;
 		} else if (AccelX <= -AppConst.ACCELERATIONCONST[rightA]) {
 			arena.moveRight();
+
 			leftA = 0;
 			if (rightA < (AppConst.ACCELERATIONCONST.length - 1))
 				rightA++;
@@ -146,31 +166,26 @@ public class GameScreen extends Screen {
 				arena.update(deltaTime);
 			}
 		}
-		if (arena.shapePlaced && AccelY < (MOVE_DOWN_ACCELERATION-RESUME_MOVE_DOWN)) {
+		if (arena.shapePlaced
+				&& AccelY < (MOVE_DOWN_ACCELERATION - RESUME_MOVE_DOWN)) {
 			arena.shapePlaced = false;
+
 		}
 
 		arena.update(deltaTime);
+		if (arena.lines > AppConst.DEFAULT_LINES_COMPLETED) {
+			state = TutorialState.SUCCESSFUL;
+		}
 
 		if (arena.gameOver()) {
-			state = GameState.STOPPED;
-			Settings.addScore(arena.score);
-			Settings.save(game.getFileIO());
+			// set Again the Tutorial Screen with Msg
+			game.setScreen(new Tutorial(game));
 		}
 	}
 
 	public void presentRunning(Graphics g) {
 
-		boolean[][] gameArea = arena.gameArea;
-		for (int i = 0; i < gameArea.length; i++) {
-			for (int j = 0; j < gameArea[i].length; j++) {
-				if (gameArea[i][j])
-					g.drawPixmap(Assets.block, j * AppConst.BLOCK_WIDTH, i
-							* AppConst.BLOCK_HEIGHT, AppConst.ORIGIN_X,
-							AppConst.ORIGIN_Y, AppConst.BLOCK_WIDTH,
-							AppConst.BLOCK_HEIGHT);
-			}
-		}
+		drawArena(g);
 
 		int[][] shapePosition = arena.shape.coordinate;
 		for (int i = 0; i < shapePosition.length; i++) {
@@ -184,94 +199,65 @@ public class GameScreen extends Screen {
 							* (AppConst.ATLASING_OFFSET + AppConst.BLOCK_HEIGHT),
 					AppConst.BLOCK_WIDTH, AppConst.BLOCK_HEIGHT);
 		}
-		commonPresent(g);
+
+		commonUI(g);
 	}
 
 	public void updatePaused(List<TouchEvent> event) {
 		for (int i = 0; i < event.size(); i++) {
-			if (event.get(i).type == TouchEvent.TOUCH_UP) {
-				if (GameUtil.inBounds(event.get(i), ScreenConst.RESUME_X,
-						ScreenConst.RESUME_Y, FileName.TEXT_RESUME_WH,
-						FileName.TEXT_RESUME_HT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					state = GameState.RUNNING;
-				} else if (GameUtil.inBounds(event.get(i), ScreenConst.QUIT_X,
-						ScreenConst.QUIT_Y, FileName.TEXT_QUIT_WH,
-						FileName.TEXT_QUIT_HT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					game.setScreen(new MenuScreen(game));
-				}
+			if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
+					AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
+					AppConst.RUNNING_PAUSE_HEIGHT)) {
+				if (Settings.soundEnabled)
+					Assets.click.play(1);
+				state = TutorialState.RUNNING;
 			}
 		}
 	}
-
-	public void presentPaused(Graphics g) {
-		presentRunning(g);
-
-		g.drawPixmap(Assets.text_resume, ScreenConst.RESUME_X,
-				ScreenConst.RESUME_Y);
-		g.drawPixmap(Assets.text_quit, ScreenConst.QUIT_X, ScreenConst.QUIT_Y);
-	}
-
-	public void updateStopped(List<TouchEvent> event) {
+	/**
+	 * This state is presented to user if it successfully completes the tutorial
+	 * */
+	protected void updateSuccessful(List<TouchEvent> event) {
 		for (int i = 0; i < event.size(); i++) {
 			if (event.get(i).type == TouchEvent.TOUCH_UP) {
-				if (GameUtil.inBounds(event.get(i), ScreenConst.RETRY_X,
-						ScreenConst.RETRY_Y, FileName.TEXT_RETRY_WH,
-						FileName.TEXT_RETRY_HT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					game.setScreen(new GameScreen(game));
-				} else if (GameUtil.inBounds(event.get(i),
-						ScreenConst.BACK_TO_MENU_X, ScreenConst.BACK_TO_MENU_Y,
-						FileName.TEXT_BACK_TO_MENU_WH,
-						FileName.TEXT_BACK_TO_MENU_HT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					game.setScreen(new MenuScreen(game));
-				}
+				if (Settings.soundEnabled)
+					Assets.click.play(1);
+				game.setScreen(new GameScreen(game));
 			}
 		}
 	}
 
-	public void presentStopped(Graphics g) {
+	public void presentSuccessful(Graphics g) {
 
-		g.drawPixmap(Assets.grey_background, AppConst.ORIGIN_X,
-				AppConst.ORIGIN_Y);
-
-		g.drawPixmap(Assets.text_your_score, ScreenConst.YOUR_SCORE_X,
-				ScreenConst.YOUR_SCORE_Y);
-		// Score of current Game
-		String score = Integer.toString(arena.score);
-		for (int i = 0; i < score.length(); i++) {
-			g.drawPixmap(Assets.digits, ScreenConst.YOUR_SCORE_VALUE_X + i
-					* AppConst.DIGIT_WIDTH, ScreenConst.YOUR_SCORE_VALUE_Y,
-					AppConst.ORIGIN_X, ((score.charAt(i) - '0') + 1)
-							* (AppConst.DIGIT_HEIGHT + AppConst.DIGIT_OFFSET),
-					AppConst.DIGIT_WIDTH, AppConst.DIGIT_HEIGHT);
-		}
-
-		g.drawPixmap(Assets.text_high_score, ScreenConst.HIGH_SCORE_X,
-				ScreenConst.HIGH_SCORE_Y);
-		// HighScore
-		String highscore = Integer.toString(Settings.HighScore);
-		for (int i = 0; i < highscore.length(); i++) {
-			g.drawPixmap(Assets.digits, ScreenConst.HIGH_SCORE_VALUE_X + i
-					* AppConst.DIGIT_WIDTH, ScreenConst.HIGH_SCORE_VALUE_Y,
-					AppConst.ORIGIN_X, ((highscore.charAt(i) - '0') + 1)
-							* (AppConst.DIGIT_HEIGHT + AppConst.DIGIT_OFFSET),
-					AppConst.DIGIT_WIDTH, AppConst.DIGIT_HEIGHT);
-		}
-
-		g.drawPixmap(Assets.text_retry, ScreenConst.RETRY_X,
-				ScreenConst.RETRY_Y);
-		g.drawPixmap(Assets.text_back_to_menu, ScreenConst.BACK_TO_MENU_X,
-				ScreenConst.BACK_TO_MENU_Y);
+		drawArena(g);
+		commonUI(g);
+		g.drawPixmap(Assets.tutorial_msg_successful,
+				ScreenConst.MSG_SUCCESSFUL_X, ScreenConst.MSG_SUCCESSFUL_Y);
 	}
 
-	void commonPresent(Graphics g) {
+	/**
+	 * This will be present to user if game gets over before he/she makes one
+	 * line "oops something went wrong lets try again"
+	 * */
+	protected void updateFail(List<TouchEvent> event) {
+		for (int i = 0; i < event.size(); i++) {
+			if (event.get(i).type == TouchEvent.TOUCH_UP) {
+				if (Settings.soundEnabled)
+					Assets.click.play(1);
+				state = TutorialState.RUNNING;
+			}
+		}
+	}
+
+	public void presentFail(Graphics g) {
+
+		drawArena(g);
+		commonUI(g);
+		g.drawPixmap(Assets.tutorial_msg_fail, ScreenConst.MSG_FAIL_X,
+				ScreenConst.MSG_FAIL_Y);
+	}
+
+	protected void commonUI(Graphics g) {
 
 		// Filing the lower base
 		for (int i = 0; i < ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
@@ -353,6 +339,20 @@ public class GameScreen extends Screen {
 				ScreenConst.SCORE_Y);
 		g.drawPixmap(Assets.text_lines, ScreenConst.LINES_X,
 				ScreenConst.LINES_Y);
+	}
+
+	protected void drawArena(Graphics g) {
+
+		boolean[][] gameArea = arena.gameArea;
+		for (int i = 0; i < gameArea.length; i++) {
+			for (int j = 0; j < gameArea[i].length; j++) {
+				if (gameArea[i][j])
+					g.drawPixmap(Assets.block, j * AppConst.BLOCK_WIDTH, i
+							* AppConst.BLOCK_HEIGHT, AppConst.ORIGIN_X,
+							AppConst.ORIGIN_Y, AppConst.BLOCK_WIDTH,
+							AppConst.BLOCK_HEIGHT);
+			}
+		}
 	}
 
 	@Override

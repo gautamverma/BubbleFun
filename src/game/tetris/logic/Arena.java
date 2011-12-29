@@ -19,14 +19,21 @@ import game.tetris.util.Assets;
 public class Arena {
 	
 	public Shape shape;
-	Shape nextShape;
+	public Shape nextShape;
 	
+	public boolean shapePlaced;
 	float accumulator = 0.0f;
 	
 	public boolean[][] gameArea;
-	public int highScore = AppConst.DEFAULT_SCORE;  
+	public int score = AppConst.DEFAULT_SCORE;
+	public int level = AppConst.INITIAL_LEVEL;
+	public int lines = AppConst.DEFAULT_LINES_COMPLETED;
+	
+	float UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL;
+	int[] LEVEL_UPDATE_SCORE = { 30, 55, 80, 100, 130, 145, 160, 170, 175 };
 	
 	public Arena() {
+		shapePlaced = false;
 		gameArea = new boolean[AppConst.ARENA_GRID_HEIGHT][AppConst.ARENA_GRID_WIDTH];
 		
 		for(int i = 0; i<gameArea.length; i++) {
@@ -54,7 +61,7 @@ public class Arena {
 	
 	public void update(float time) {
 		accumulator += time;
-		while(accumulator > AppConst.UPDATE_INTERVAL) {
+		while(accumulator > UPDATE_INTERVAL) {
 			if(isEmpty()) shape.update();
 			else {
 				if(Settings.soundEnabled)
@@ -68,8 +75,14 @@ public class Arena {
 				
 				getShape();             /* Getting a new shape to continue the Game        */
 				}
-			accumulator -= AppConst.UPDATE_INTERVAL;
+			accumulator -= UPDATE_INTERVAL;
 		}
+		
+		if(lines > LEVEL_UPDATE_SCORE[level-1]) {
+			level++;
+			UPDATE_INTERVAL -= AppConst.LEVEL_INTERVAL_DECREASE;
+		}
+		
 	}
 	
 	/*
@@ -132,7 +145,8 @@ public class Arena {
 					gameArea[j][k] = false;
 				}
 			}
-			highScore += AppConst.ONE_LINE_POINT;
+			score += AppConst.ONE_LINE_POINTS;
+			lines++;
 			return true;
 		}
 		return false;
@@ -148,6 +162,8 @@ public class Arena {
 	}
 	
 	void placeShape() {
+		/* This will ensure that next shape will not be come down */
+		shapePlaced = true;
 		// Now Shape can't move so place in the gameArea Buffer
 		for(int i = 0; i<shape.coordinate.length; i++) {
 			gameArea[shape.coordinate[i][1]][shape.coordinate[i][0]] = true;

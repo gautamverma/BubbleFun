@@ -1,8 +1,8 @@
 package game.tetris.screen;
 
 import game.tetris.logic.Settings;
-import game.tetris.util.AppConst;
 import game.tetris.util.Assets;
+import game.tetris.util.FileName;
 
 import com.game.Game;
 import com.game.Screen;
@@ -25,51 +25,50 @@ public class LoadingScreen extends Screen {
 	
 		Graphics g = game.getGraphics();
 		
-		Assets.alphabets = g.newPixmap(AppConst.ALPHABETS, PixmapFormat.RGB565);
-		Assets.block = g.newPixmap(AppConst.BLOCK, PixmapFormat.RGB565);
-		Assets.writingblock = g.newPixmap(AppConst.WRITING_BLOCK, PixmapFormat.RGB565);
-		Assets.digits = g.newPixmap(AppConst.DIGITS, PixmapFormat.RGB565);
-		Assets.smallBlock = g.newPixmap(AppConst.SMALL_BLOCK, PixmapFormat.RGB565);
-		Assets.background = g.newPixmap(AppConst.BACKGROUND, PixmapFormat.RGB565);
+		Assets.block = g.newPixmap(FileName.BLOCK, PixmapFormat.RGB565);
+		Assets.writingblock = g.newPixmap(FileName.WRITING_BLOCK, PixmapFormat.RGB565);
+		Assets.background = g.newPixmap(FileName.BACKGROUND, PixmapFormat.RGB565);
+		Assets.grey_background = g.newPixmap(FileName.GREY_BACKGROUND, PixmapFormat.RGB565);
+		Assets.filing_block_hor = g.newPixmap(FileName.FILING_BLOCK_HOR, PixmapFormat.RGB565);
+		Assets.filing_block_ver = g.newPixmap(FileName.FILING_BLOCK_VER, PixmapFormat.RGB565);
 		
-		Assets.soundbutton = g.newPixmap(AppConst.SOUNDBUTTON, PixmapFormat.RGB565);
+		Assets.soundbutton = g.newPixmap(FileName.SOUNDBUTTON, PixmapFormat.RGB565);
 		
-		Assets.btn_rotate = g.newPixmap(AppConst.BTN_ROTATE, PixmapFormat.RGB565);
-		Assets.btn_left = g.newPixmap(AppConst.BTN_LEFT, PixmapFormat.RGB565);
-		Assets.btn_right = g.newPixmap(AppConst.BTN_RIGHT, PixmapFormat.RGB565);
+		Assets.text_start = g.newPixmap(FileName.TEXT_START, PixmapFormat.RGB565);
+		Assets.text_tutorial = g.newPixmap(FileName.TEXT_TUTORIAL, PixmapFormat.RGB565);
+		Assets.text_highscore = g.newPixmap(FileName.TEXT_HIGHSCORE, PixmapFormat.RGB565);
+		Assets.text_high_score = g.newPixmap(FileName.TEXT_HIGH_SCORE, PixmapFormat.RGB565);
+		Assets.text_retry = g.newPixmap(FileName.TEXT_RETRY, PixmapFormat.RGB565);
+		Assets.text_your_score = g.newPixmap(FileName.TEXT_YOUR_SCORE, PixmapFormat.RGB565);
+		Assets.text_back_to_menu = g.newPixmap(FileName.TEXT_BACK_TO_MENU, PixmapFormat.RGB565);
+		Assets.text_quit = g.newPixmap(FileName.TEXT_QUIT, PixmapFormat.RGB565);
+		Assets.text_resume = g.newPixmap(FileName.TEXT_RESUME, PixmapFormat.RGB565);
 		
-		Assets.msg_toptostart = g.newPixmap(AppConst.TAP_TO_START, PixmapFormat.RGB565);;
+		Assets.text_score = g.newPixmap(FileName.TEXT_SCORE, PixmapFormat.RGB565);
+		Assets.text_level = g.newPixmap(FileName.TEXT_LEVEL, PixmapFormat.RGB565);
+		Assets.text_lines = g.newPixmap(FileName.TEXT_LINES, PixmapFormat.RGB565);
+		Assets.text_next = g.newPixmap(FileName.TEXT_NEXT, PixmapFormat.RGB565);
 		
-		Assets.msg_quit = g.newPixmap(AppConst.QUIT, PixmapFormat.RGB565); 
-		Assets.msg_resume = g.newPixmap(AppConst.RESUME, PixmapFormat.RGB565);
+		Assets.text_tap_to_start = g.newPixmap(FileName.TEXT_TAP_TO_START, PixmapFormat.RGB565);;
 		
-		Assets.msg_playagain = g.newPixmap(AppConst.PLAY_AGAIN, PixmapFormat.RGB565);
-		Assets.msg_tomenu = g.newPixmap(AppConst.TO_MENU, PixmapFormat.RGB565);
-		Assets.msg_taphere = g.newPixmap(AppConst.TAP_HERE, PixmapFormat.RGB565);
+		Assets.tutorial_msg1 = g.newPixmap(FileName.TUTORIAL_MSG1, PixmapFormat.RGB565);
+		Assets.tutorial_msg2 = g.newPixmap(FileName.TUTORIAL_MSG2, PixmapFormat.RGB565);
+		Assets.tutorial_msg3 = g.newPixmap(FileName.TUTORIAL_MSG3, PixmapFormat.RGB565);
+		Assets.tutorial_msg4 = g.newPixmap(FileName.TUTORIAL_MSG4, PixmapFormat.RGB565);
+		Assets.tutorial_msg5 = g.newPixmap(FileName.TUTORIAL_MSG5, PixmapFormat.RGB565);
+		Assets.tutorial_msg6 = g.newPixmap(FileName.TUTORIAL_MSG6, PixmapFormat.RGB565);
+		Assets.tutorial_msg_successful = g.newPixmap(FileName.TUTORIAL_MSG_SUCCESSFUL, PixmapFormat.RGB565);
+		Assets.tutorial_msg_fail = g.newPixmap(FileName.TUTORIAL_MSG_FAIL, PixmapFormat.RGB565);
 		
-		Assets.msg_next = g.newPixmap(AppConst.NEXT, PixmapFormat.RGB565);
-		Assets.msg_score = g.newPixmap(AppConst.SCORE, PixmapFormat.RGB565);
-		
-		Assets.numbers = g.newPixmap(AppConst.NUMBERS, PixmapFormat.RGB565);
-		Assets.numbers2x = g.newPixmap(AppConst.NUMBERS_2X, PixmapFormat.RGB565);
-		
-		Assets.msg_help1 = g.newPixmap(AppConst.MSG_HELP1, PixmapFormat.RGB565);
-		Assets.msg_help2_part1 = g.newPixmap(AppConst.MSG_HELP2_PART1, PixmapFormat.RGB565);
-		Assets.msg_help2_part2 = g.newPixmap(AppConst.MSG_HELP2_PART2, PixmapFormat.RGB565);
-		Assets.msg_help3_part1 = g.newPixmap(AppConst.MSG_HELP3_PART1, PixmapFormat.RGB565);
-		Assets.msg_help3_part2 = g.newPixmap(AppConst.MSG_HELP3_PART2, PixmapFormat.RGB565);
-		
-		Assets.help1 = g.newPixmap(AppConst.HELP1, PixmapFormat.RGB565);
-		Assets.help2 = g.newPixmap(AppConst.HELP2, PixmapFormat.RGB565);
-		Assets.help3_scene1 = g.newPixmap(AppConst.HELP3_SCENE1, PixmapFormat.RGB565);
-		Assets.help3_scene2 = g.newPixmap(AppConst.HELP3_SCENE2, PixmapFormat.RGB565);
+		Assets.digits = g.newPixmap(FileName.DIGITS_SP, PixmapFormat.RGB565);
+		Assets.small_digits = g.newPixmap(FileName.SMALL_DIGITS_SP, PixmapFormat.RGB565);
 		
 		Audio audio = game.getAudio();
 		
-		Assets.click = audio.newSound(AppConst.MUSIC_CLICK);
-		Assets.blockSettled = audio.newSound(AppConst.MUSIC_BLOCK_SETTLED);
-		Assets.rotate = audio.newSound(AppConst.MUSIC_ROTATE_BTN);
-		Assets.lineCompleted = audio.newSound(AppConst.MUSIC_LINE_COMPLETED);
+		Assets.click = audio.newSound(FileName.MUSIC_CLICK);
+		Assets.blockSettled = audio.newSound(FileName.MUSIC_BLOCK_SETTLED);
+		Assets.rotate = audio.newSound(FileName.MUSIC_ROTATE_BTN);
+		Assets.lineCompleted = audio.newSound(FileName.MUSIC_LINE_COMPLETED);
 		
 		// Loading Settings or default if its first time
 		Settings.load(game.getFileIO());
