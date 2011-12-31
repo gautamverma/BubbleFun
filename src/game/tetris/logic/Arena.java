@@ -208,10 +208,11 @@ public class Arena {
 				|| coordinate[2][0]==AppConst.LEFT_LIMIT || coordinate[3][0]==AppConst.LEFT_LIMIT )
 			clearDirection();
 		else {
+			boolean moveLeft = true;
 			for(int i=0; i<shape.coordinate.length; i++) {
-				if(gameArea[coordinate[i][1]][coordinate[i][0]-1]) return ;
+				if(gameArea[coordinate[i][1]][coordinate[i][0]-1]) moveLeft = false;
 			}
-			shape.moveLeft();
+			if(moveLeft) shape.moveLeft();
 		}
 	}
 	public void moveRight() {
@@ -220,10 +221,11 @@ public class Arena {
 				|| coordinate[2][0]==AppConst.RIGHT_LIMIT || coordinate[3][0]==AppConst.RIGHT_LIMIT )
 			clearDirection();
 		else {
+			boolean moveRight = true;
 			for(int i=0; i<shape.coordinate.length; i++) {
-				if(gameArea[coordinate[i][1]][coordinate[i][0]+1]) return ;
+				if(gameArea[coordinate[i][1]][coordinate[i][0]+1]) moveRight = false;
 			}
-			shape.moveRight();
+			if(moveRight) shape.moveRight();
 		} 
 	}
 	

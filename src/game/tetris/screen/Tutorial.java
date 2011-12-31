@@ -2,7 +2,6 @@ package game.tetris.screen;
 
 import game.tetris.logic.Arena;
 import game.tetris.logic.Settings;
-import game.tetris.screen.GameScreen.GameState;
 import game.tetris.util.AppConst;
 import game.tetris.util.Assets;
 import game.tetris.util.FileName;
@@ -82,8 +81,10 @@ public class Tutorial extends Screen {
 			presentStart(g);
 		else if (state == TutorialState.START_PAGE2)
 			presentStart(g);
-		else if (state == TutorialState.RUNNING || state==TutorialState.PAUSED)
+		else if (state == TutorialState.RUNNING)
 			presentRunning(g);
+		else if(state==TutorialState.PAUSED)
+			presentPaused(g);
 		else if (state == TutorialState.SUCCESSFUL)
 			presentSuccessful(g);
 		else if (state == TutorialState.FAIL)
@@ -93,17 +94,16 @@ public class Tutorial extends Screen {
 	protected void updateStart(List<TouchEvent> events) {
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i).type == TouchEvent.TOUCH_UP) {
+				if (Settings.soundEnabled)	Assets.click.play(1);
 				if (state == TutorialState.START_PAGE2) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
 					if (GameUtil.inBounds(events.get(i), ScreenConst.MSG6_X,
 							ScreenConst.MSG6_Y, FileName.TUTORIAL_MSG6_WH,
 							FileName.TUTORIAL_MSG6_HT))
 						state = TutorialState.RUNNING;
 					else
 						state = TutorialState.START_PAGE1;
-				} else
-					state = TutorialState.START_PAGE2;
+				} 
+				else state = TutorialState.START_PAGE2;
 			}
 		}
 	}
@@ -130,17 +130,19 @@ public class Tutorial extends Screen {
 	public void updateRunning(List<TouchEvent> event, float AccelX,
 			float AccelY, float deltaTime) {
 		for (int i = 0; i < event.size(); i++) {
-			if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
-					AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
-					AppConst.RUNNING_PAUSE_HEIGHT)) {
-				if (Settings.soundEnabled)
-					Assets.click.play(1);
-				state = TutorialState.PAUSED;
-			}
-			else if (event.get(i).type == TouchEvent.TOUCH_UP) {
-				if (Settings.soundEnabled)
-					Assets.rotate.play(1);
-				arena.rotate();
+			if (event.get(i).type == TouchEvent.TOUCH_UP) {
+				if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
+						AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
+						AppConst.RUNNING_PAUSE_HEIGHT)) {
+					if (Settings.soundEnabled)
+						Assets.click.play(1);
+					state = TutorialState.PAUSED;
+				}
+				else {
+					if (Settings.soundEnabled)
+						Assets.rotate.play(1);
+					arena.rotate();
+				}
 			}
 		}
 
@@ -179,7 +181,7 @@ public class Tutorial extends Screen {
 
 		if (arena.gameOver()) {
 			// set Again the Tutorial Screen with Msg
-			game.setScreen(new Tutorial(game));
+			state = TutorialState.FAIL;
 		}
 	}
 
@@ -205,15 +207,33 @@ public class Tutorial extends Screen {
 
 	public void updatePaused(List<TouchEvent> event) {
 		for (int i = 0; i < event.size(); i++) {
-			if (GameUtil.inBounds(event.get(i), AppConst.ORIGIN_X,
-					AppConst.ORIGIN_Y, AppConst.RUNNING_PAUSE_WIDTH,
-					AppConst.RUNNING_PAUSE_HEIGHT)) {
-				if (Settings.soundEnabled)
-					Assets.click.play(1);
-				state = TutorialState.RUNNING;
+			if (event.get(i).type == TouchEvent.TOUCH_UP) {
+				if (GameUtil.inBounds(event.get(i), ScreenConst.RESUME_X,
+						ScreenConst.RESUME_Y, FileName.TEXT_RESUME_WH,
+						FileName.TEXT_RESUME_HT)) {
+					if (Settings.soundEnabled)
+						Assets.click.play(1);
+					state = TutorialState.RUNNING;
+				} else if (GameUtil.inBounds(event.get(i), ScreenConst.QUIT_X,
+						ScreenConst.QUIT_Y, FileName.TEXT_QUIT_WH,
+						FileName.TEXT_QUIT_HT)) {
+					if (Settings.soundEnabled)
+						Assets.click.play(1);
+					game.setScreen(new MenuScreen(game));
+				}
 			}
 		}
 	}
+	
+
+	public void presentPaused(Graphics g) {
+		presentRunning(g);
+
+		g.drawPixmap(Assets.text_resume, ScreenConst.RESUME_X,
+				ScreenConst.RESUME_Y);
+		g.drawPixmap(Assets.text_quit, ScreenConst.QUIT_X, ScreenConst.QUIT_Y);
+	}
+
 	/**
 	 * This state is presented to user if it successfully completes the tutorial
 	 * */
@@ -244,7 +264,7 @@ public class Tutorial extends Screen {
 			if (event.get(i).type == TouchEvent.TOUCH_UP) {
 				if (Settings.soundEnabled)
 					Assets.click.play(1);
-				state = TutorialState.RUNNING;
+				game.setScreen(new Tutorial(game));
 			}
 		}
 	}
@@ -260,7 +280,7 @@ public class Tutorial extends Screen {
 	protected void commonUI(Graphics g) {
 
 		// Filing the lower base
-		for (int i = 0; i < ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
+		for (int i = 0; i <= ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
 			for (int j = 0; j < ((AppConst.ARENA_GRID_WIDTH * AppConst.BLOCK_WIDTH) / FileName.FILING_BLOCK_HOR_WH); j++) {
 				g.drawPixmap(Assets.filing_block_hor, AppConst.ORIGIN_X
 						+ (j * FileName.FILING_BLOCK_HOR_WH),
@@ -369,5 +389,4 @@ public class Tutorial extends Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 	}
-
 }

@@ -81,8 +81,8 @@ public class Shape {
 			// out from up and left
 			coordinate[i][0] += (-dx); coordinate[i][1] += (-dy);
 			// out from right and below
-			if(coordinate[i][0]>(AppConst.ARENA_GRID_WIDTH-1)) deltaX = coordinate[i][0]-(AppConst.ARENA_GRID_WIDTH-1);
-			if(coordinate[i][1]>(AppConst.ARENA_GRID_HEIGHT-1)) deltaY = coordinate[i][1]-(AppConst.ARENA_GRID_HEIGHT-1); 
+			if(deltaX < (coordinate[i][0]-(AppConst.ARENA_GRID_WIDTH-1))) deltaX = coordinate[i][0]-(AppConst.ARENA_GRID_WIDTH-1);
+			if(deltaY < (coordinate[i][1]-(AppConst.ARENA_GRID_HEIGHT-1))) deltaY = coordinate[i][1]-(AppConst.ARENA_GRID_HEIGHT-1); 
 		}
 		
 		for(int i = 0; i<coordinate.length; i++) {

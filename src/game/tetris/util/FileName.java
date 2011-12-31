@@ -72,7 +72,7 @@ public class FileName {
 	public static final int FILING_BLOCK_VER_WH = 8;
 	public static final int FILING_BLOCK_VER_HT = 44;
 	public static final int FILING_BLOCK_HOR_WH = 42;
-	public static final int FILING_BLOCK_HOR_HT = 8;
+	public static final int FILING_BLOCK_HOR_HT = 42;
 
 	// Help Messages
 	public static final String TUTORIAL_MSG1 = "tutorial_msg1.png";

@@ -8,10 +8,10 @@ public class ScreenConst {
 
 	/***** MenuScreen Constants  ******/
 	public static final int START_X = 81;
-	public static final int START_Y = 180;
+	public static final int START_Y = 170;
 	
 	public static final int TUTORIAL_X = 43;
-	public static final int TUTORIAL_Y = 240;
+	public static final int TUTORIAL_Y = 260;
 	
 	public static final int SOUNDBUTTON_X = 0;
 	public static final int SOUNDBUTTON_Y = 416;

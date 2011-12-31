@@ -274,7 +274,7 @@ public class GameScreen extends Screen {
 	void commonPresent(Graphics g) {
 
 		// Filing the lower base
-		for (int i = 0; i < ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
+		for (int i = 0; i <= ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
 			for (int j = 0; j < ((AppConst.ARENA_GRID_WIDTH * AppConst.BLOCK_WIDTH) / FileName.FILING_BLOCK_HOR_WH); j++) {
 				g.drawPixmap(Assets.filing_block_hor, AppConst.ORIGIN_X
 						+ (j * FileName.FILING_BLOCK_HOR_WH),
