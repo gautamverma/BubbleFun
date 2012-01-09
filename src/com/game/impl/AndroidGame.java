@@ -6,6 +6,7 @@ import com.game.audio.Audio;
 import com.game.fileio.FileIO;
 import com.game.graphics.Graphics;
 import com.game.input.Input;
+import com.skiller.api.operations.SKApplication;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.Window;
@@ -21,6 +23,8 @@ import android.view.WindowManager;
 /*
  * This is the main class which will deal with all window mangement
  * It is inherited by each type of game which we build 
+ * 
+ * ** Added Skiller SDK Support
  * */
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
@@ -30,7 +34,11 @@ public abstract class AndroidGame extends Activity implements Game {
     FileIO fileIO;
     Screen screen;
     WakeLock wakeLock;
-
+    SKApplication skApplication;
+    
+    // Handler to run methods on UI Thread
+    Handler handler;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +63,16 @@ public abstract class AndroidGame extends Activity implements Game {
         fileIO = new AndroidFileIO(getAssets());
         audio = new AndroidAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
+        
+        String app_key = "4436dc7cb4084bf4ae8dcee5b34a81fd"; 
+		String app_secret = "461e1ba84570469199baadedab11aa33"; 
+		String app_id = "198804347030"; 			
+		String app_ver = "1";
+  		int app_dist = 0;
+  		
+  		skApplication = new SKApplication(app_id, app_key, app_secret, app_ver, app_dist);
+  		
+  		handler = new Handler();
         screen = getStartScreen();
         setContentView(renderView);
         
@@ -101,6 +119,14 @@ public abstract class AndroidGame extends Activity implements Game {
         return audio;
     }
 
+    @Override
+    public SKApplication getSKApplication() {
+    	return skApplication;
+    }
+    
+    public Handler getHandler() {
+    	return handler;
+    }
     @Override
     public void setScreen(Screen screen) {
         if (screen == null)

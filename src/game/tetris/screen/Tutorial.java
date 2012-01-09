@@ -43,7 +43,7 @@ public class Tutorial extends Screen {
 	public Tutorial(Game game) {
 		super(game);
 
-		arena = new Arena();
+		arena = new Arena(false);
 		state = TutorialState.START_PAGE1;
 		MOVE_DOWN_ACCELERATION = MOVE_DOWN_ACCELERATION_CONST;
 	}
@@ -75,6 +75,7 @@ public class Tutorial extends Screen {
 		Graphics g = game.getGraphics();
 
 		// No Need to do it in multiple present methods
+		g.drawPixmap(Assets.blue_background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 		g.drawPixmap(Assets.background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 
 		if (state == TutorialState.START_PAGE1)
@@ -96,9 +97,9 @@ public class Tutorial extends Screen {
 			if (events.get(i).type == TouchEvent.TOUCH_UP) {
 				if (Settings.soundEnabled)	Assets.click.play(1);
 				if (state == TutorialState.START_PAGE2) {
-					if (GameUtil.inBounds(events.get(i), ScreenConst.MSG6_X,
-							ScreenConst.MSG6_Y, FileName.TUTORIAL_MSG6_WH,
-							FileName.TUTORIAL_MSG6_HT))
+					if (GameUtil.inBounds(events.get(i), ScreenConst.MSG7_X,
+							ScreenConst.MSG7_Y, FileName.TUTORIAL_MSG7_WH,
+							FileName.TUTORIAL_MSG7_HT))
 						state = TutorialState.RUNNING;
 					else
 						state = TutorialState.START_PAGE1;
@@ -110,6 +111,7 @@ public class Tutorial extends Screen {
 
 	protected void presentStart(Graphics g) {
 
+		g.drawPixmap(Assets.blue_background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 		if (state == TutorialState.START_PAGE1) {
 			g.drawPixmap(Assets.tutorial_msg1, ScreenConst.MSG_X,
 					ScreenConst.MSG1_Y);
@@ -117,13 +119,15 @@ public class Tutorial extends Screen {
 					ScreenConst.MSG2_Y);
 			g.drawPixmap(Assets.tutorial_msg3, ScreenConst.MSG_X,
 					ScreenConst.MSG3_Y);
-		} else {
 			g.drawPixmap(Assets.tutorial_msg4, ScreenConst.MSG_X,
 					ScreenConst.MSG4_Y);
+		} else {
 			g.drawPixmap(Assets.tutorial_msg5, ScreenConst.MSG_X,
 					ScreenConst.MSG5_Y);
-			g.drawPixmap(Assets.tutorial_msg6, ScreenConst.MSG6_X,
+			g.drawPixmap(Assets.tutorial_msg6, ScreenConst.MSG_X,
 					ScreenConst.MSG6_Y);
+			g.drawPixmap(Assets.tutorial_msg7, ScreenConst.MSG7_X,
+					ScreenConst.MSG7_Y);
 		}
 	}
 
@@ -278,20 +282,6 @@ public class Tutorial extends Screen {
 	}
 
 	protected void commonUI(Graphics g) {
-
-		// Filing the lower base
-		for (int i = 0; i <= ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
-			for (int j = 0; j < ((AppConst.ARENA_GRID_WIDTH * AppConst.BLOCK_WIDTH) / FileName.FILING_BLOCK_HOR_WH); j++) {
-				g.drawPixmap(Assets.filing_block_hor, AppConst.ORIGIN_X
-						+ (j * FileName.FILING_BLOCK_HOR_WH),
-						AppConst.HORIZONTAL_LINE_Y
-								+ (i * FileName.FILING_BLOCK_HOR_HT));
-			}
-		}
-
-		for (int i = 0; i < AppConst.FRAMEBUFFER_HEIGHT; i += FileName.FILING_BLOCK_VER_HT) {
-			g.drawPixmap(Assets.filing_block_ver, AppConst.VERTICAL_LINE_X, i);
-		}
 
 		// Shape in the Next Box
 		int[][] nsCoordinate = arena.getNextShapeCoordinate();

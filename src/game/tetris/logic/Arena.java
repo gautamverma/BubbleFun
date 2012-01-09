@@ -29,10 +29,9 @@ public class Arena {
 	public int level = AppConst.INITIAL_LEVEL;
 	public int lines = AppConst.DEFAULT_LINES_COMPLETED;
 	
-	float UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL;
-	int[] LEVEL_UPDATE_SCORE = { 30, 55, 80, 100, 130, 145, 160, 170, 175 };
+	public float UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL;
 	
-	public Arena() {
+	public Arena(boolean isSaved) {
 		shapePlaced = false;
 		gameArea = new boolean[AppConst.ARENA_GRID_HEIGHT][AppConst.ARENA_GRID_WIDTH];
 		
@@ -43,6 +42,9 @@ public class Arena {
 		
 		nextShape = Shape.getInstance();
 		getShape();
+		
+		if(isSaved) level = Settings.Level;
+		UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL - ((level-1)*AppConst.LEVEL_INTERVAL_DECREASE);
 	}
 	
 	/* NextShape is already initialized So it is given to the shape and it set to
@@ -77,12 +79,6 @@ public class Arena {
 				}
 			accumulator -= UPDATE_INTERVAL;
 		}
-		
-		if(lines > LEVEL_UPDATE_SCORE[level-1]) {
-			level++;
-			UPDATE_INTERVAL -= AppConst.LEVEL_INTERVAL_DECREASE;
-		}
-		
 	}
 	
 	/*

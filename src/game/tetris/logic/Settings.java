@@ -13,16 +13,18 @@ import com.game.fileio.FileIO;
  * 1) SoundEnabled
  * 2) HighScore
  * 
- * ** To change Color
+ * ** Save game level
  * */
 public class Settings {
 
 	public static boolean soundEnabled;
 	public static int HighScore;
+	public static int Level;
 	static String fileName;
 	
 	static
 	{
+		Level = 1;
 		HighScore = 0;
 		soundEnabled = true;
 		fileName = "tetris_settings";
@@ -35,6 +37,7 @@ public class Settings {
 			writer.write(Boolean.toString(soundEnabled));
 			writer.newLine();
 			writer.write(HighScore); writer.newLine();
+			writer.write(Level); writer.newLine();
 			writer.flush();
 		}
 		catch(IOException ioException) {
@@ -61,6 +64,7 @@ public class Settings {
 				reader = new BufferedReader(new InputStreamReader(fileIO.readFile(fileName)));
 				soundEnabled = Boolean.parseBoolean(reader.readLine());
 				HighScore = Integer.parseInt(reader.readLine());
+				Level = Integer.parseInt(reader.readLine());
 			}
 		}
 		catch(IOException ioException) {
@@ -87,5 +91,9 @@ public class Settings {
 	
 	public static void toggleSound() {
 		soundEnabled = !soundEnabled;
+	}
+
+	public static void addLevel(int level) {
+		Level = level;
 	}
 }

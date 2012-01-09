@@ -1,14 +1,10 @@
 package game.tetris.util;
 
 /**
- * This class contains all the constants used in the game. So to produce any configuration chnage
+ * This class contains all the constants used in the game. So to produce any configuration change
  * kindly use this class. 
  * 
  * @author Gautam
- * TODO Break the constants present in this file & Assets into 3 files(For readability.)
- *  1) It will contain each file name used Name of Assets which holds it.
- *  2) Game Screens Constant which is used in Displaying i.e Displaying Constants
- *  3) All Other Constants
  */
 public class AppConst {
 
@@ -120,4 +116,25 @@ public class AppConst {
 	
     // Acceleration Value to update 
 	public static final int ACCELERATION_CONSTANT = 2;
+	
+	// Intent Request 
+	public static final int PRAC_GAME = 0;
+	
+	// Score Constants
+	public static final int LINES_REQUIRED_UPDATE_LEVEL = 15;
+	
+	// Other Constants
+	public static final String GAME_LEVEL = "level";
+	public static final String GAME_SCORE = "score";
+	
+	public static final int GAME_LEVEL_ONE = 1;
+	public static final int GAME_LEVEL_SECOND = 2;
+	public static final int GAME_LEVEL_FIFTH = 5;
+	public static final int GAME_LEVEL_SIXTH = 6;
+	public static final int GAME_LEVEL_TENTH = 10;
+	
+	// Achievement ID
+	public static final int LEVEL1_ACHIEVEMENT_ID = 10108;
+	public static final int LEVEL5_ACHIEVEMENT_ID = 10109;
+	public static final int LEVEL10_ACHIEVEMENT_ID = 10107;
 }

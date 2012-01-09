@@ -33,7 +33,8 @@ public class GameScreen extends Screen {
 
 	Arena arena;
 	GameState state;
-
+	
+	int initialLines = 0;
 	/****************** Accelerometer Constants *****************/
 	int leftA = 0;
 	int rightA = 0;
@@ -47,7 +48,7 @@ public class GameScreen extends Screen {
 	public GameScreen(Game game) {
 		super(game);
 
-		arena = new Arena();
+		arena = new Arena( game.isSaved() );
 		state = GameState.START;
 		MOVE_DOWN_ACCELERATION = MOVE_DOWN_ACCELERATION_CONST;
 	}
@@ -80,6 +81,7 @@ public class GameScreen extends Screen {
 		Graphics g = game.getGraphics();
 
 		// No Need to do it in multiple present methods
+		g.drawPixmap(Assets.blue_background,AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 		g.drawPixmap(Assets.background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 
 		if (state == GameState.START)
@@ -97,6 +99,7 @@ public class GameScreen extends Screen {
 		if (event.size() > 0) {
 			if (Settings.soundEnabled)
 				Assets.click.play(1);
+			game.getSKApplication().getGameManager().getSinglePlayerTools().startPractice(null);
 			state = GameState.RUNNING;
 		}
 
@@ -151,11 +154,36 @@ public class GameScreen extends Screen {
 		}
 
 		arena.update(deltaTime);
-
+		
+		if((arena.lines-initialLines) > (AppConst.LINES_REQUIRED_UPDATE_LEVEL-arena.level)) {
+			initialLines = arena.lines;
+			int previousLevel = arena.level;
+			arena.level++;
+			if(previousLevel==AppConst.GAME_LEVEL_ONE && arena.level==AppConst.GAME_LEVEL_SECOND) {
+				presentingLevelChange();
+				game.openAchievement(AppConst.LEVEL1_ACHIEVEMENT_ID);
+			}
+			else if(previousLevel==AppConst.GAME_LEVEL_FIFTH && arena.level==AppConst.GAME_LEVEL_SIXTH) {
+				presentingLevelChange();
+				game.openAchievement(AppConst.LEVEL5_ACHIEVEMENT_ID);
+			}
+			else if(previousLevel==AppConst.GAME_LEVEL_TENTH) {
+				presentingLevelChange();
+				game.openAchievement(AppConst.LEVEL10_ACHIEVEMENT_ID);
+			}
+				
+			arena.UPDATE_INTERVAL -= AppConst.LEVEL_INTERVAL_DECREASE;
+		}
+		
 		if (arena.gameOver()) {
 			state = GameState.STOPPED;
-			Settings.addScore(arena.score);
-			Settings.save(game.getFileIO());
+			saveGame();
+			if(game.isTournamentMatch())
+				game.endTournament(arena.score, arena.level);
+			else {
+				game.getSKApplication().getGameManager().getSinglePlayerTools().endPractice(arena.score, arena.level, null);
+				game.clearGame();
+			}
 		}
 	}
 
@@ -186,7 +214,7 @@ public class GameScreen extends Screen {
 		}
 		commonPresent(g);
 	}
-
+	
 	public void updatePaused(List<TouchEvent> event) {
 		for (int i = 0; i < event.size(); i++) {
 			if (event.get(i).type == TouchEvent.TOUCH_UP) {
@@ -218,13 +246,7 @@ public class GameScreen extends Screen {
 	public void updateStopped(List<TouchEvent> event) {
 		for (int i = 0; i < event.size(); i++) {
 			if (event.get(i).type == TouchEvent.TOUCH_UP) {
-				if (GameUtil.inBounds(event.get(i), ScreenConst.RETRY_X,
-						ScreenConst.RETRY_Y, FileName.TEXT_RETRY_WH,
-						FileName.TEXT_RETRY_HT)) {
-					if (Settings.soundEnabled)
-						Assets.click.play(1);
-					game.setScreen(new GameScreen(game));
-				} else if (GameUtil.inBounds(event.get(i),
+				 if (GameUtil.inBounds(event.get(i),
 						ScreenConst.BACK_TO_MENU_X, ScreenConst.BACK_TO_MENU_Y,
 						FileName.TEXT_BACK_TO_MENU_WH,
 						FileName.TEXT_BACK_TO_MENU_HT)) {
@@ -238,9 +260,7 @@ public class GameScreen extends Screen {
 
 	public void presentStopped(Graphics g) {
 
-		g.drawPixmap(Assets.grey_background, AppConst.ORIGIN_X,
-				AppConst.ORIGIN_Y);
-
+		g.drawPixmap(Assets.blue_background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
 		g.drawPixmap(Assets.text_your_score, ScreenConst.YOUR_SCORE_X,
 				ScreenConst.YOUR_SCORE_Y);
 		// Score of current Game
@@ -265,27 +285,11 @@ public class GameScreen extends Screen {
 					AppConst.DIGIT_WIDTH, AppConst.DIGIT_HEIGHT);
 		}
 
-		g.drawPixmap(Assets.text_retry, ScreenConst.RETRY_X,
-				ScreenConst.RETRY_Y);
 		g.drawPixmap(Assets.text_back_to_menu, ScreenConst.BACK_TO_MENU_X,
 				ScreenConst.BACK_TO_MENU_Y);
 	}
 
 	void commonPresent(Graphics g) {
-
-		// Filing the lower base
-		for (int i = 0; i <= ((AppConst.FRAMEBUFFER_HEIGHT - (AppConst.ARENA_GRID_HEIGHT * AppConst.BLOCK_HEIGHT)) / FileName.FILING_BLOCK_HOR_HT); i++) {
-			for (int j = 0; j < ((AppConst.ARENA_GRID_WIDTH * AppConst.BLOCK_WIDTH) / FileName.FILING_BLOCK_HOR_WH); j++) {
-				g.drawPixmap(Assets.filing_block_hor, AppConst.ORIGIN_X
-						+ (j * FileName.FILING_BLOCK_HOR_WH),
-						AppConst.HORIZONTAL_LINE_Y
-								+ (i * FileName.FILING_BLOCK_HOR_HT));
-			}
-		}
-
-		for (int i = 0; i < AppConst.FRAMEBUFFER_HEIGHT; i += FileName.FILING_BLOCK_VER_HT) {
-			g.drawPixmap(Assets.filing_block_ver, AppConst.VERTICAL_LINE_X, i);
-		}
 
 		// Shape in the Next Box
 		int[][] nsCoordinate = arena.getNextShapeCoordinate();
@@ -355,6 +359,21 @@ public class GameScreen extends Screen {
 				ScreenConst.LINES_Y);
 	}
 
+	public void presentingLevelChange() {
+		
+		Graphics g = game.getGraphics();
+		presentRunning(g);
+		// Now Dim the UI by background
+		// Show Level Changing message
+		g.drawPixmap(Assets.translucent_background, AppConst.ORIGIN_X, AppConst.ORIGIN_Y);
+	}
+	
+	private void saveGame() {
+		Settings.addScore(arena.score);
+		Settings.addLevel(arena.level);
+		Settings.save(game.getFileIO());
+	}
+	
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
@@ -369,5 +388,4 @@ public class GameScreen extends Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 	}
-
 }

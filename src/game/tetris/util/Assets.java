@@ -16,18 +16,22 @@ public class Assets {
 	public static Pixmap writingblock;
 	public static Pixmap alphabets;
 	public static Pixmap background;
-	public static Pixmap grey_background;
-	public static Pixmap filing_block_ver;
-	public static Pixmap filing_block_hor;
+	public static Pixmap blue_background;
+	public static Pixmap translucent_background;
 		
 	public static Pixmap soundbutton;
 	
-	public static Pixmap text_start;
+	public static Pixmap text_start_game;
+	public static Pixmap text_new_game;
     public static Pixmap text_tutorial;
+    public static Pixmap text_play_online;
+    public static Pixmap text_dash_board;
+    public static Pixmap text_leader_board;
+    public static Pixmap text_coin_store;
+    
     public static Pixmap text_resume;
     public static Pixmap text_quit;
-    public static Pixmap text_retry;
-    public static Pixmap text_highscore;
+    
     public static Pixmap text_high_score;
     public static Pixmap text_your_score;
     public static Pixmap text_back_to_menu;
@@ -47,6 +51,7 @@ public class Assets {
 	public static Pixmap tutorial_msg4;
 	public static Pixmap tutorial_msg5;
 	public static Pixmap tutorial_msg6;
+	public static Pixmap tutorial_msg7;
 	public static Pixmap tutorial_msg_successful;
 	public static Pixmap tutorial_msg_fail;
 	

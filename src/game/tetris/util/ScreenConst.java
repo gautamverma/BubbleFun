@@ -7,11 +7,26 @@ package game.tetris.util;
 public class ScreenConst {
 
 	/***** MenuScreen Constants  ******/
-	public static final int START_X = 81;
-	public static final int START_Y = 170;
+	public static final int NEW_GAME_X = 61;
+	public static final int NEW_GAME_Y = 40;
 	
-	public static final int TUTORIAL_X = 43;
-	public static final int TUTORIAL_Y = 260;
+	public static final int START_GAME_X = 45;
+	public static final int START_GAME_Y = 95;
+	
+	public static final int PLAY_ONLINE_X = 41;
+	public static final int PLAY_ONLINE_Y = 150;
+
+	public static final int LEADER_BOARD_X = 27;
+	public static final int LEADER_BOARD_Y = 210;
+	
+	public static final int DASH_BOARD_X = 39;
+	public static final int DASH_BOARD_Y = 270;
+	
+	public static final int COIN_STORE_X = 56;
+	public static final int COIN_STORE_Y = 330;
+	
+	public static final int TUTORIAL_X = 70;
+	public static final int TUTORIAL_Y = 390;
 	
 	public static final int SOUNDBUTTON_X = 0;
 	public static final int SOUNDBUTTON_Y = 416;
@@ -57,31 +72,29 @@ public class ScreenConst {
 	public static final int YOUR_SCORE_Y = 40;
 	
 	public static final int YOUR_SCORE_VALUE_X = 50;
-	public static final int YOUR_SCORE_VALUE_Y = 88;
+	public static final int YOUR_SCORE_VALUE_Y = 100;
 	
 	public static final int HIGH_SCORE_X = 30;
-	public static final int HIGH_SCORE_Y = 140;
+	public static final int HIGH_SCORE_Y = 155;
 
 	public static final int HIGH_SCORE_VALUE_X = 50;
-	public static final int HIGH_SCORE_VALUE_Y = 188;
-
-	public static final int RETRY_X = 85;
-	public static final int RETRY_Y = 300;
+	public static final int HIGH_SCORE_VALUE_Y = 215;
 	
 	public static final int BACK_TO_MENU_X = 0;
-	public static final int BACK_TO_MENU_Y = 440;
+	public static final int BACK_TO_MENU_Y = 420;
 	
 	/******  Tutorial Screen Constants ******/
 	// Start
 	public static final int MSG_X = 5;
-	public static final int MSG6_X = 41;
+	public static final int MSG7_X = 35;
 	
 	public static final int MSG1_Y = 40;
-	public static final int MSG2_Y = 151;
-	public static final int MSG3_Y = 262;
-	public static final int MSG4_Y = 40;
-	public static final int MSG5_Y = 191;
-	public static final int MSG6_Y = 420;
+	public static final int MSG2_Y = 140;
+	public static final int MSG3_Y = 240;
+	public static final int MSG4_Y = 340;
+	public static final int MSG5_Y = 60;
+	public static final int MSG6_Y = 190;
+	public static final int MSG7_Y = 430;
 	
 	// Fail
 	public static final int MSG_FAIL_X = 12;
