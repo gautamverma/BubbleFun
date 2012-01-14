@@ -31,7 +31,7 @@ public class Arena {
 	
 	public float UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL;
 	
-	public Arena(boolean isSaved) {
+	public Arena() {
 		shapePlaced = false;
 		gameArea = new boolean[AppConst.ARENA_GRID_HEIGHT][AppConst.ARENA_GRID_WIDTH];
 		
@@ -42,9 +42,6 @@ public class Arena {
 		
 		nextShape = Shape.getInstance();
 		getShape();
-		
-		if(isSaved) level = Settings.Level;
-		UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL - ((level-1)*AppConst.LEVEL_INTERVAL_DECREASE);
 	}
 	
 	/* NextShape is already initialized So it is given to the shape and it set to
@@ -58,9 +55,21 @@ public class Arena {
 	}
 	
 	public void rotate() {
-		shape.rotate();
+		int[][] newCoordinates = shape.rotate();
+		if(newCoordinates!=null) {
+			if(isCoordinatesEmpty(newCoordinates))
+				shape.updateCoordinates(newCoordinates);
+		}
 	}
 	
+	protected boolean isCoordinatesEmpty(int[][] newCoordinates) {
+		
+		for(int i = 0; i<newCoordinates.length; i++) {
+				if(gameArea[newCoordinates[i][1]][newCoordinates[i][0]]) return false;
+		}
+		return true;
+	}
+
 	public void update(float time) {
 		accumulator += time;
 		while(accumulator > UPDATE_INTERVAL) {
@@ -120,7 +129,7 @@ public class Arena {
 		}
 		
 		if(i!=-1) {
-			// Erase the Completed line and bring every other drawn block x unit down. (i.e increase y value)
+			// Erase the Completed line and bring every other drawn block x a unit down. (i.e increase y value)
 			// Where x is equal to the number of the empty below the column
 			if(Settings.soundEnabled)
 				Assets.lineCompleted.play(1);
@@ -132,13 +141,20 @@ public class Arena {
 					
 				int emptyBlocks = 0;
 				int l = i;
-				while(l<AppConst.ARENA_GRID_HEIGHT && !gameArea[l][k]) {
+				while(l>-1 &&  !gameArea[l][k]) 
+					l--;
+				// Atleast one block is present
+				if(l!=-1) {
+					emptyBlocks += (i-l);
+					int h = i;
+					while(h<AppConst.ARENA_GRID_HEIGHT && !gameArea[h][k]) {
 						emptyBlocks++;
-						l++;
+						h++;
+						}
+					for(int j = l; j>-1; j--) {
+						gameArea[j+(emptyBlocks-1)][k] = gameArea[j][k];
+						gameArea[j][k] = false;
 					}
-				for(int j = i-1; j>-1; j--) {
-					gameArea[j+emptyBlocks][k] = gameArea[j][k];
-					gameArea[j][k] = false;
 				}
 			}
 			score += AppConst.ONE_LINE_POINTS;
@@ -148,10 +164,11 @@ public class Arena {
 		return false;
 	}
 	
-	// Need to revised
+	// Revised Once
+	// Check from 4 to 7 becoz these are entry points of that Block
 	public boolean gameOver() {
 		// Right now it checks first row and if it filled it assumpes the game over
-		for(int i = 0; i<AppConst.ARENA_GRID_WIDTH; i++) {
+		for(int i = AppConst.GAME_OVER_MINX; i<=AppConst.GAME_OVER_MAXX; i++) {
 			if(gameArea[AppConst.ORIGIN_Y][i]) return true;
 		}
 		return false;

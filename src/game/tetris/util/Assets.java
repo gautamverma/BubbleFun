@@ -54,6 +54,8 @@ public class Assets {
 	public static Pixmap tutorial_msg7;
 	public static Pixmap tutorial_msg_successful;
 	public static Pixmap tutorial_msg_fail;
+
+	public static Pixmap final_message;
 	
 	public static Sound rotate;
 	public static Sound lineCompleted;

@@ -50,45 +50,52 @@ public class Shape {
 	 *      				0 -1
 	 * 						1  0
 	 * */
-	public void rotate() {
+	public int[][] rotate() {
 		
 		// Done to avoid translation of square block due to rotation
-		if(type==ShapeType.SQUARE) return ;
+		if(type==ShapeType.SQUARE) return null;
 		
+		int[][] transformationCoordinates = new int[coordinate.length][];
+		for(int i = 0; i<transformationCoordinates.length; i++) {
+			transformationCoordinates[i] = new int[coordinate[i].length];
+			for(int j = 0; j<transformationCoordinates[i].length; j++) {
+				transformationCoordinates[i][j] = coordinate[i][j]; 
+			}
+		}
 		// Translate it to Origin rotate it by 90 anti-clockwise and re-translate
-		int tx = coordinate[2][0]; int ty = coordinate[2][1];
+		int tx = transformationCoordinates[2][0]; int ty = transformationCoordinates[2][1];
 		
 		int[][] rotationalMatrix = { { 0, 1},
 									 { -1, 0} };
 		
 		int dx = 0, dy = 0;
 		int deltaX = 0, deltaY=0;
-		for(int i = 0; i<coordinate.length; i++) {
-			coordinate[i][0] -= tx; coordinate[i][1] -= ty;
+		for(int i = 0; i<transformationCoordinates.length; i++) {
+			transformationCoordinates[i][0] -= tx; transformationCoordinates[i][1] -= ty;
 			
-			int x = coordinate[i][0]; int y = coordinate[i][1];
+			int x = transformationCoordinates[i][0]; int y = transformationCoordinates[i][1];
 			// Simplified as theta is 90
-			coordinate[i][0] = rotationalMatrix[0][1]*y;
-			coordinate[i][1] = rotationalMatrix[1][0]*x;
+			transformationCoordinates[i][0] = rotationalMatrix[0][1]*y;
+			transformationCoordinates[i][1] = rotationalMatrix[1][0]*x;
 			
-			coordinate[i][0] += tx; coordinate[i][1] += ty;
-			if(coordinate[i][0]<dx) dx = coordinate[i][0];
-			if(coordinate[i][1]<dy) dy = coordinate[i][1];
+			transformationCoordinates[i][0] += tx; transformationCoordinates[i][1] += ty;
+			if(transformationCoordinates[i][0]<dx) dx = transformationCoordinates[i][0];
+			if(transformationCoordinates[i][1]<dy) dy = transformationCoordinates[i][1];
 		}
 		
 		// In case some coordinates get outside of frame buffer
-		for(int i = 0; i<coordinate.length; i++) {
+		for(int i = 0; i<transformationCoordinates.length; i++) {
 			// out from up and left
-			coordinate[i][0] += (-dx); coordinate[i][1] += (-dy);
+			transformationCoordinates[i][0] += (-dx); transformationCoordinates[i][1] += (-dy);
 			// out from right and below
-			if(deltaX < (coordinate[i][0]-(AppConst.ARENA_GRID_WIDTH-1))) deltaX = coordinate[i][0]-(AppConst.ARENA_GRID_WIDTH-1);
-			if(deltaY < (coordinate[i][1]-(AppConst.ARENA_GRID_HEIGHT-1))) deltaY = coordinate[i][1]-(AppConst.ARENA_GRID_HEIGHT-1); 
+			if(deltaX < (transformationCoordinates[i][0]-(AppConst.ARENA_GRID_WIDTH-1))) deltaX = transformationCoordinates[i][0]-(AppConst.ARENA_GRID_WIDTH-1);
+			if(deltaY < (transformationCoordinates[i][1]-(AppConst.ARENA_GRID_HEIGHT-1))) deltaY = transformationCoordinates[i][1]-(AppConst.ARENA_GRID_HEIGHT-1); 
 		}
 		
-		for(int i = 0; i<coordinate.length; i++) {
-			coordinate[i][0] -= deltaX; coordinate[i][1] -= deltaY;
+		for(int i = 0; i<transformationCoordinates.length; i++) {
+			transformationCoordinates[i][0] -= deltaX; transformationCoordinates[i][1] -= deltaY;
 		}
-	
+		return transformationCoordinates;
 	}
 	
 	
@@ -219,6 +226,14 @@ public class Shape {
 				}
 			}
 			return (diff+1)*AppConst.BLOCK_HEIGHT;
+		}
+	}
+
+	public void updateCoordinates(int[][] newCoordinates) {
+		for(int i = 0; i<newCoordinates.length; i++) {
+			for(int j = 0; j<newCoordinates[i].length; j++) {
+				coordinate[i][j] = newCoordinates[i][j];
+			}
 		}
 	}
 }

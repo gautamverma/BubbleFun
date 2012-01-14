@@ -103,4 +103,9 @@ public class ScreenConst {
 	// Successful
 	public static final int MSG_SUCCESSFUL_X = 27;
 	public static final int MSG_SUCCESSFUL_Y = 190;
+	
+	/********   Finishing Screen ************/
+	public static final int FINAL_MESSAGE_X = 0;
+	public static final int FINAL_MESSAGE_Y = 190;
+	
 }

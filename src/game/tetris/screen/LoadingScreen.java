@@ -63,6 +63,8 @@ public class LoadingScreen extends Screen {
 		Assets.tutorial_msg_successful = g.newPixmap(FileName.TUTORIAL_MSG_SUCCESSFUL, PixmapFormat.RGB565);
 		Assets.tutorial_msg_fail = g.newPixmap(FileName.TUTORIAL_MSG_FAIL, PixmapFormat.RGB565);
 		
+		Assets.final_message = g.newPixmap(FileName.FINAL_MESSAGE, PixmapFormat.RGB565);
+		
 		Assets.digits = g.newPixmap(FileName.DIGITS_SP, PixmapFormat.RGB565);
 		Assets.small_digits = g.newPixmap(FileName.SMALL_DIGITS_SP, PixmapFormat.RGB565);
 		

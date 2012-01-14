@@ -37,50 +37,58 @@ public class MenuScreen extends Screen {
 		
 		for(int i = 0; i<event.size(); i++) {
 			if(event.get(i).type == TouchEvent.TOUCH_UP) {
-				if(GameUtil.inBounds(event.get(i), ScreenConst.START_GAME_X, ScreenConst.START_GAME_Y,
-							FileName.TEXT_START_GAME_WH, FileName.TEXT_START_GAME_HT)){
-					if(Settings.soundEnabled)
-						Assets.click.play(1);
-					game.login();
-					game.setScreen(new GameScreen(game));
-				}
-				else if(GameUtil.inBounds(event.get(i), ScreenConst.NEW_GAME_X, ScreenConst.NEW_GAME_Y,
+				if(GameUtil.inBounds(event.get(i), ScreenConst.NEW_GAME_X, ScreenConst.NEW_GAME_Y,
 						FileName.TEXT_NEW_GAME_WH, FileName.TEXT_NEW_GAME_HT)) {
 						if(Settings.soundEnabled)
 							Assets.click.play(1);
+						if(game.login())
+							game.startPracticeGame();
+						else
+							game.showStandAlonePracticeGameToast();
+						game.setScreen(new GameScreen(game));
+					}
+				else if(GameUtil.inBounds(event.get(i), ScreenConst.START_GAME_X, ScreenConst.START_GAME_Y,
+						FileName.TEXT_START_GAME_WH, FileName.TEXT_START_GAME_HT)){
+						if(Settings.soundEnabled)
+							Assets.click.play(1);
 						game.startSavedGame(true);
-						game.login();
-						game.setScreen(new GameScreen(game));	
+						if(game.login())
+							game.startPracticeGame();
+						else
+							game.showStandAlonePracticeGameToast();
+						game.setScreen(new GameScreen(game));
+				
 					}	
 				else if(GameUtil.inBounds(event.get(i), ScreenConst.PLAY_ONLINE_X, ScreenConst.PLAY_ONLINE_Y,
 						FileName.TEXT_PLAY_ONLINE_WH, FileName.TEXT_PLAY_ONLINE_HT)) {
 						if(Settings.soundEnabled)
 							Assets.click.play(1);
-						game.login();
-						if(game.openTournament()) {					
-							game.setScreen(new GameScreen(game));
-							}
+						if(game.login()) {
+							if(game.openTournament()) {					
+								game.setScreen(new GameScreen(game));
+								}
+						}
 					}
 				else if(GameUtil.inBounds(event.get(i), ScreenConst.LEADER_BOARD_X, ScreenConst.LEADER_BOARD_Y,
 						FileName.TEXT_LEADER_BOARD_WH, FileName.TEXT_LEADER_BOARD_HT)) {
 					if(Settings.soundEnabled)
 						Assets.click.play(1);
-					game.login();
-					game.openLeaderBoard();
+					if(game.login())
+						game.openLeaderBoard();
 					}
 				else if(GameUtil.inBounds(event.get(i), ScreenConst.DASH_BOARD_X, ScreenConst.DASH_BOARD_Y,
 						FileName.TEXT_DASH_BOARD_WH, FileName.TEXT_DASH_BOARD_HT)) {
 					if(Settings.soundEnabled)
 						Assets.click.play(1);
-					game.login();
-					game.openDashBoard();
+					if(game.login())
+						game.openDashBoard();
 				}
 				else if(GameUtil.inBounds(event.get(i), ScreenConst.COIN_STORE_X, ScreenConst.COIN_STORE_Y,
 						FileName.TEXT_COIN_STORE_WH, FileName.TEXT_COIN_STORE_HT)) {
 					if(Settings.soundEnabled)
 						Assets.click.play(1);
-					game.login();
-					game.openCoinStore();
+					if(game.login())
+						game.openCoinStore();
 				}	
 				else if(GameUtil.inBounds(event.get(i), ScreenConst.TUTORIAL_X, ScreenConst.TUTORIAL_Y,
 						FileName.TEXT_TUTORIAL_WH, FileName.TEXT_TUTORIAL_HT)) {

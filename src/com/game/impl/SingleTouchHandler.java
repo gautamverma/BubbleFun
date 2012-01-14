@@ -3,6 +3,7 @@ package com.game.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.game.Game;
 import com.game.Pool;
 import com.game.Pool.PoolObjectFactory;
 import com.game.input.Input.TouchEvent;
@@ -13,7 +14,9 @@ import android.view.View;
 
 
 public class SingleTouchHandler implements TouchHandler {
-    boolean isTouched;
+    Game game;
+	
+	boolean isTouched;
     int touchX;
     int touchY;
     Pool<TouchEvent> touchEventPool;
@@ -22,7 +25,7 @@ public class SingleTouchHandler implements TouchHandler {
     float scaleX;
     float scaleY;
     
-    public SingleTouchHandler(View view, float scaleX, float scaleY) {
+    public SingleTouchHandler(Game game, View view, float scaleX, float scaleY) {
         PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
             @Override
             public TouchEvent createObject() {
@@ -34,10 +37,13 @@ public class SingleTouchHandler implements TouchHandler {
 
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        
+        this.game = game;
     }
     
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+    	unblockRenderingThread();
         synchronized(this) {
             TouchEvent touchEvent = touchEventPool.newObject();
             switch (event.getAction()) {
@@ -64,7 +70,11 @@ public class SingleTouchHandler implements TouchHandler {
         }
     }
 
-    @Override
+    protected void unblockRenderingThread() {
+		game.unblockThreadBlocked();
+	}
+
+	@Override
     public boolean isTouchDown(int pointer) {
         synchronized(this) {
             if(pointer == 0)

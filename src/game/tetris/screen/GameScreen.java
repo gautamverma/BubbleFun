@@ -43,14 +43,29 @@ public class GameScreen extends Screen {
 	static float MOVE_DOWN_ACCELERATION;
 	static float RESUME_MOVE_DOWN = 0.7f;
 
+	float[] AccelerometerConst;
 	/************************************************************/
 
 	public GameScreen(Game game) {
 		super(game);
 
-		arena = new Arena( game.isSaved() );
+		arena = new Arena();
 		state = GameState.START;
 		MOVE_DOWN_ACCELERATION = MOVE_DOWN_ACCELERATION_CONST;
+		
+		// Now Load Save game Setting
+		if(game.isSaved()) {
+			Settings.load(game.getFileIO());
+			arena.level = Settings.Level;
+			arena.lines = Settings.Lines;
+			arena.score = arena.lines*AppConst.ONE_LINE_POINTS;
+		}
+		// Min Speed .46sec and Max is .04
+		arena.UPDATE_INTERVAL = AppConst.STARTING_UPDATE_INTERVAL - ((arena.level)*AppConst.LEVEL_INTERVAL_DECREASE);
+		if(arena.level<AppConst.GAME_LEVEL_FIFTH)
+			AccelerometerConst = AppConst.INITIALACCELERATIONCONST;
+		else
+			AccelerometerConst = AppConst.HIGHACCELERATIONCONST;
 	}
 
 	@Override
@@ -69,10 +84,6 @@ public class GameScreen extends Screen {
 			updatePaused(event);
 		else
 			updateStopped(event);
-
-		if (arena.level > AppConst.HIGHEST_LEVEL) {
-			game.setScreen(new FinishScreen(game));
-		}
 	}
 
 	@Override
@@ -99,10 +110,8 @@ public class GameScreen extends Screen {
 		if (event.size() > 0) {
 			if (Settings.soundEnabled)
 				Assets.click.play(1);
-			game.getSKApplication().getGameManager().getSinglePlayerTools().startPractice(null);
 			state = GameState.RUNNING;
 		}
-
 	}
 
 	public void presentStart(Graphics g) {
@@ -130,15 +139,15 @@ public class GameScreen extends Screen {
 		}
 
 		// For each more turn it will fired at higher acceleration
-		if (AccelX >= AppConst.ACCELERATIONCONST[leftA]) {
+		if (AccelX >= AccelerometerConst[leftA]) {
 			arena.moveLeft();
 			rightA = 0;
-			if (leftA < (AppConst.ACCELERATIONCONST.length - 1))
+			if (leftA < (AccelerometerConst.length - 1))
 				leftA++;
-		} else if (AccelX <= -AppConst.ACCELERATIONCONST[rightA]) {
+		} else if (AccelX <= -AccelerometerConst[rightA]) {
 			arena.moveRight();
 			leftA = 0;
-			if (rightA < (AppConst.ACCELERATIONCONST.length - 1))
+			if (rightA < (AccelerometerConst.length - 1))
 				rightA++;
 		}
 
@@ -155,7 +164,7 @@ public class GameScreen extends Screen {
 
 		arena.update(deltaTime);
 		
-		if((arena.lines-initialLines) > (AppConst.LINES_REQUIRED_UPDATE_LEVEL-arena.level)) {
+		if(arena.lines > linesRequiredToUpdateLevel()) {
 			initialLines = arena.lines;
 			int previousLevel = arena.level;
 			arena.level++;
@@ -166,25 +175,56 @@ public class GameScreen extends Screen {
 			else if(previousLevel==AppConst.GAME_LEVEL_FIFTH && arena.level==AppConst.GAME_LEVEL_SIXTH) {
 				presentingLevelChange();
 				game.openAchievement(AppConst.LEVEL5_ACHIEVEMENT_ID);
+				changeAccelerometerConstants();
 			}
-			else if(previousLevel==AppConst.GAME_LEVEL_TENTH) {
+			else if(previousLevel==AppConst.GAME_LEVEL_TWELVE) {
 				presentingLevelChange();
-				game.openAchievement(AppConst.LEVEL10_ACHIEVEMENT_ID);
+				game.openAchievement(AppConst.LEVEL12_ACHIEVEMENT_ID);
 			}
-				
+			if (arena.level > AppConst.HIGHEST_LEVEL) {
+				endGame();
+				game.setScreen(new FinishScreen(game));
+				}	
 			arena.UPDATE_INTERVAL -= AppConst.LEVEL_INTERVAL_DECREASE;
 		}
 		
 		if (arena.gameOver()) {
 			state = GameState.STOPPED;
-			saveGame();
+			endGame();	
+		}
+	}
+
+	// Higher Levels more sensitive values needed
+	protected void changeAccelerometerConstants() {
+		AccelerometerConst = AppConst.HIGHACCELERATIONCONST;
+	}
+
+	/**
+	 * Saves and Ends the Game as it supposed to be
+	 *   if tournament then calls endtournaments
+	 *   if Practice match then end the Practice match
+	 *   then clear all the Game Attributes
+	 * */
+	protected void endGame() {
+		// Save Lines & Levels
+		saveGame();
+		if(game.islogged()) {
 			if(game.isTournamentMatch())
 				game.endTournament(arena.score, arena.level);
 			else {
 				game.getSKApplication().getGameManager().getSinglePlayerTools().endPractice(arena.score, arena.level, null);
-				game.clearGame();
-			}
+				}
 		}
+		//Clear all the Game Data as game has ended
+		game.clearGame();
+	}
+	
+	private int linesRequiredToUpdateLevel() {
+		int requiredLines = 0;
+		for(int i = 1; i<=(arena.level+1); i++) {
+			requiredLines += (AppConst.LINES_REQUIRED_UPDATE_LEVEL - i + 1);
+		}
+		return requiredLines;
 	}
 
 	public void presentRunning(Graphics g) {
@@ -229,6 +269,8 @@ public class GameScreen extends Screen {
 						FileName.TEXT_QUIT_HT)) {
 					if (Settings.soundEnabled)
 						Assets.click.play(1);
+					
+					endGame();
 					game.setScreen(new MenuScreen(game));
 				}
 			}
@@ -369,8 +411,15 @@ public class GameScreen extends Screen {
 	}
 	
 	private void saveGame() {
+		// Load the most Recent Values
+		Settings.load(game.getFileIO());
+
+		// Add all the Game Values
 		Settings.addScore(arena.score);
 		Settings.addLevel(arena.level);
+		Settings.addLines(arena.lines);
+
+		// Save the Values
 		Settings.save(game.getFileIO());
 	}
 	

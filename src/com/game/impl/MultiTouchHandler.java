@@ -3,6 +3,7 @@ package com.game.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.game.Game;
 import com.game.Pool;
 import com.game.Pool.PoolObjectFactory;
 import com.game.input.Input.TouchEvent;
@@ -12,7 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class MultiTouchHandler implements TouchHandler {
-    boolean[] isTouched = new boolean[20];
+	Game game;
+	
+	boolean[] isTouched = new boolean[20];
     int[] touchX = new int[20];
     int[] touchY = new int[20];
     Pool<TouchEvent> touchEventPool;
@@ -20,8 +23,9 @@ public class MultiTouchHandler implements TouchHandler {
     List<TouchEvent> touchEventsBuffer = new ArrayList<TouchEvent>();
     float scaleX;
     float scaleY;
+    
 
-    public MultiTouchHandler(View view, float scaleX, float scaleY) {
+    public MultiTouchHandler(Game game, View view, float scaleX, float scaleY) {
         PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
             @Override
             public TouchEvent createObject() {
@@ -33,10 +37,12 @@ public class MultiTouchHandler implements TouchHandler {
 
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+        this.game = game;
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+    	unblockRenderingThread();
         synchronized (this) {
             int action = event.getAction() & MotionEvent.ACTION_MASK;
             int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
@@ -93,6 +99,10 @@ public class MultiTouchHandler implements TouchHandler {
         }
     }
 
+    protected void unblockRenderingThread() {
+		game.unblockThreadBlocked();
+	}
+    
     @Override
     public boolean isTouchDown(int pointer) {
         synchronized (this) {

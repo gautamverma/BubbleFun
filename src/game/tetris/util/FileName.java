@@ -104,12 +104,17 @@ public class FileName {
 	public static final int TUTORIAL_MSG6_WH = 296;
 	public static final int TUTORIAL_MSG6_HT = 98;
 	public static final int TUTORIAL_MSG7_WH = 250;
-	public static final int TUTORIAL_MSG7_HT = 40;
+	public static final int TUTORIAL_MSG7_HT = 50;
 	
 	public static final int TUTORIAL_MSG_SUCCESSFUL_WH = 265;
 	public static final int TUTORIAL_MSG_SUCCESSFUL_HT = 74;
 	public static final int TUTORIAL_MSG_FAIL_WH = 296;
 	public static final int TUTORIAL_MSG_FAIL_HT = 68;
+	
+	public static final String FINAL_MESSAGE = "final_message.png";
+			
+	public static final int FINAL_MESSAGE_WH = 320;
+	public static final int FINAL_MESSAGE_HT = 95;
 	
 	// Miscellaneous 
 	public static final String SOUNDBUTTON = "soundbuttons.png";		

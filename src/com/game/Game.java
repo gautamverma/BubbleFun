@@ -28,7 +28,7 @@ public interface Game {
 	Screen getCurrentScreen();
 	Screen getStartScreen();
 	
-	void login();
+	boolean login();
 	void openLeaderBoard();
 	void openDashBoard();
 	void openCoinStore();
@@ -36,7 +36,12 @@ public interface Game {
 	boolean openTournament();
 	boolean isTournamentMatch();
 	void endTournament(int score, int level);
+	void startPracticeGame();
 	void startSavedGame(boolean b);
+	void showStandAlonePracticeGameToast();
 	boolean isSaved();
+	boolean islogged();
 	void clearGame();
+	void unblockThreadBlocked();
+	
 }

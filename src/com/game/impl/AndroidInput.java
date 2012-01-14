@@ -2,6 +2,7 @@ package com.game.impl;
 
 import java.util.List;
 
+import com.game.Game;
 import com.game.input.Input;
 import com.game.input.TouchHandler;
 
@@ -18,13 +19,13 @@ public class AndroidInput implements Input {
     KeyboardHandler keyHandler;
     TouchHandler touchHandler;
 
-    public AndroidInput(Context context, View view, float scaleX, float scaleY) {
+    public AndroidInput(Game game, Context context, View view, float scaleX, float scaleY) {
         accelHandler = new AccelerometerHandler(context);
         keyHandler = new KeyboardHandler(view);               
         if(Integer.parseInt(VERSION.SDK) < 5) 
-            touchHandler = new SingleTouchHandler(view, scaleX, scaleY);
+            touchHandler = new SingleTouchHandler(game, view, scaleX, scaleY);
         else
-            touchHandler = new MultiTouchHandler(view, scaleX, scaleY);        
+            touchHandler = new MultiTouchHandler(game, view, scaleX, scaleY);        
     }
 
     @Override

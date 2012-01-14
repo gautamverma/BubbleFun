@@ -3,6 +3,7 @@ package com.game.impl;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -26,7 +27,14 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
         renderThread.start();         
     }      
     
-    public void run() {
+    // Check if this one is called
+    @Override
+	protected void onWindowVisibilityChanged(int visibility) {
+		Log.i("Rendering Thread", "Windows Visibility Changed");
+		super.onWindowVisibilityChanged(visibility);
+	}
+
+	public void run() {
         Rect dstRect = new Rect();
         long startTime = System.nanoTime();
         while(running) {  
@@ -46,9 +54,11 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
         }
     }
 
-    public void pause() {                        
+    public void pause() {
+    	Log.i("RenderView", "in pause");
         running = false;                        
         while(true) {
+        	Log.i("RenderView", "trying to kill it.");
             try {
                 renderThread.join();
                 break;
@@ -56,5 +66,6 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
                 // retry
             }
         }
+        Log.i("RenderView", "Killed it.");
     }        
 }

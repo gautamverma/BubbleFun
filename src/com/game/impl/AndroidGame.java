@@ -62,8 +62,9 @@ public abstract class AndroidGame extends Activity implements Game {
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(getAssets());
         audio = new AndroidAudio(this);
-        input = new AndroidInput(this, renderView, scaleX, scaleY);
+        input = new AndroidInput(this, this, renderView, scaleX, scaleY);
         
+        // Skiller SDk API Keys
         String app_key = "4436dc7cb4084bf4ae8dcee5b34a81fd"; 
 		String app_secret = "461e1ba84570469199baadedab11aa33"; 
 		String app_id = "198804347030"; 			

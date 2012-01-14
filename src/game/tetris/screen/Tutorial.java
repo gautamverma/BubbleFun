@@ -35,15 +35,10 @@ public class Tutorial extends Screen {
 	static float RESUME_MOVE_DOWN = 0.7f;
 	/************************************************************/
 
-	CharSequence LEFT_MSG = "Congrats, you have moved block left successfully by tilting mobile to left";
-	CharSequence RIGHT_MSG = "Congrats, you have moved block right successfully by tilting mobile to right";
-	CharSequence ROTATE_MSG = "Congrats, you have rotated block successfully by tapping on mobile";
-	CharSequence DOWN_MSG = "Congrats, you have moved block down successfully by making mobile vertical";
-
 	public Tutorial(Game game) {
 		super(game);
 
-		arena = new Arena(false);
+		arena = new Arena();
 		state = TutorialState.START_PAGE1;
 		MOVE_DOWN_ACCELERATION = MOVE_DOWN_ACCELERATION_CONST;
 	}
@@ -151,17 +146,17 @@ public class Tutorial extends Screen {
 		}
 
 		// For each more turn it will fired at higher acceleration
-		if (AccelX >= AppConst.ACCELERATIONCONST[leftA]) {
+		if (AccelX >= AppConst.INITIALACCELERATIONCONST[leftA]) {
 			arena.moveLeft();
 
 			rightA = 0;
-			if (leftA < (AppConst.ACCELERATIONCONST.length - 1))
+			if (leftA < (AppConst.INITIALACCELERATIONCONST.length - 1))
 				leftA++;
-		} else if (AccelX <= -AppConst.ACCELERATIONCONST[rightA]) {
+		} else if (AccelX <= -AppConst.INITIALACCELERATIONCONST[rightA]) {
 			arena.moveRight();
 
 			leftA = 0;
-			if (rightA < (AppConst.ACCELERATIONCONST.length - 1))
+			if (rightA < (AppConst.INITIALACCELERATIONCONST.length - 1))
 				rightA++;
 		}
 
