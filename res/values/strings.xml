@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, Tetris!</string>
+    <string name="app_name">Teltetris</string>
+    
+    <string name="btn_game">Game</string>
+    <string name="btn_ach">Achievement</string>
+    
+    <string name="no_connection_message">Unable to Connect, Please review your network Settings.</string>
+    <string name="no_connection_title">Connection Alert</string>
+    <string name="no_user_logged">No user logged</string>
+    <string name="no_connection_active">No active Internet connection</string>
+    
+    <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="loading">Loading</string>
+    
+    <string name="practice_game">Starting a practice Game</string>
+    <string name="achievement_opened">An Achievement Received, Check it out on Dashboard.</string>
+    <string name="achievement_failed">Achievement failed to open. Network Issue</string>
+    <string name="tournament_winner">Congrats, You stood First!!!</string>
+    <string name="tournament_loser">Oops, you are short of few lines. Try again</string>
+</resources>
